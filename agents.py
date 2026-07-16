@@ -1,0 +1,104 @@
+import os
+import json
+import re
+
+from dotenv import load_dotenv
+import google.generativeai as genai
+from google.api_core.exceptions import ResourceExhausted
+
+from prompts import (
+    MASTER_ANALYZER_PROMPT,
+    JD_MATCH_PROMPT
+)
+
+# ---------------------------------------------------------
+# LOAD API KEY
+# ---------------------------------------------------------
+
+load_dotenv()
+
+api_key = os.getenv("GEMINI_API_KEY")
+
+print("API KEY:", api_key)
+
+genai.configure(api_key=api_key)
+
+model = genai.GenerativeModel("gemini-2.5-flash")
+
+
+# ---------------------------------------------------------
+# CLEAN JSON
+# ---------------------------------------------------------
+
+def clean_json(text):
+
+    text = text.replace("```json", "")
+    text = text.replace("```", "").strip()
+
+    match = re.search(r"\{.*\}", text, re.DOTALL)
+
+    if match:
+        return match.group()
+
+    return text
+
+
+# ---------------------------------------------------------
+# COMMON GEMINI FUNCTION
+# ---------------------------------------------------------
+
+def run_json_agent(prompt):
+
+    try:
+
+        response = model.generate_content(prompt)
+
+    except ResourceExhausted:
+
+        raise Exception(
+            "Gemini API quota exceeded. Please try again later."
+        )
+
+    text = clean_json(response.text)
+
+    try:
+
+        return json.loads(text)
+
+    except Exception:
+
+        print("=" * 60)
+        print(text)
+        print("=" * 60)
+
+        raise
+
+
+# ---------------------------------------------------------
+# MASTER RESUME ANALYZER
+# ---------------------------------------------------------
+
+def analyze_resume(resume_text):
+
+    prompt = MASTER_ANALYZER_PROMPT.format(
+        resume=resume_text
+    )
+
+    return run_json_agent(prompt)
+
+
+# ---------------------------------------------------------
+# JOB DESCRIPTION MATCH
+# ---------------------------------------------------------
+
+def job_match_analysis(resume_text, job_description):
+
+    prompt = JD_MATCH_PROMPT.format(
+
+        resume=resume_text,
+
+        job_description=job_description
+
+    )
+
+    return run_json_agent(prompt)
