@@ -95,13 +95,13 @@ if uploaded_resume and st.button("🚀 Analyze Resume"):
 
      st.subheader("👤 Personal Information")
 
-    st.write(f"**Name:** {resume.get('name','N/A')}")
-    st.write(f"**Email:** {resume.get('email','N/A')}")
-    st.write(f"**Phone:** {resume.get('phone','N/A')}")
+     st.write(f"**Name:** {resume.get('name','N/A')}")
+     st.write(f"**Email:** {resume.get('email','N/A')}")
+     st.write(f"**Phone:** {resume.get('phone','N/A')}")
 
-    st.divider()
+     st.divider()
 
-    st.subheader("🎓 Education")
+     st.subheader("🎓 Education")
 
     for edu in resume.get("education", []):
         st.write(f"**{edu.get('degree', 'N/A')}**")
@@ -113,9 +113,21 @@ if uploaded_resume and st.button("🚀 Analyze Resume"):
 
     st.divider()
 
+    st.write(resume.get("skills"))
+
     st.subheader("🛠 Skills")
 
-    st.write(", ".join(resume.get("skills", [])))
+    skills_list = resume.get("skills", [])
+
+    formatted_skills = []
+
+    for skill in skills_list:
+        if isinstance(skill, str):
+         formatted_skills.append(skill)
+        elif isinstance(skill, dict):
+          formatted_skills.append(skill.get("name", str(skill)))
+
+    st.write(", ".join(formatted_skills))
 
     st.divider()
 
@@ -136,16 +148,16 @@ if uploaded_resume and st.button("🚀 Analyze Resume"):
 
      st.subheader("📊 ATS Analysis")
 
-    score = ats.get("ats_score", 0)
+     score = ats.get("ats_score", 0)
 
-    st.metric("ATS Score", f"{score}%")
+     st.metric("ATS Score", f"{score}%")
 
     if isinstance(score, (int, float)):
         st.progress(score / 100)
 
-    st.divider()
+        st.divider()
 
-    st.subheader("✅ Strengths")
+        st.subheader("✅ Strengths")
 
     for item in ats.get("strengths", []):
         st.success(item)
