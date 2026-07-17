@@ -21,6 +21,9 @@ if not api_key:
 
 st.write("API Key Loaded:", api_key is not None)
 st.write("Key Prefix:", api_key[:5] if api_key else "None")
+import sys
+st.write("Python:", sys.version)
+st.write("google-generativeai:", genai.__version__)
 st.stop()
 
 
