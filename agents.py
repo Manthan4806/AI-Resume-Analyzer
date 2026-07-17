@@ -21,9 +21,7 @@ if not api_key:
 
 st.write("API Key Loaded:", api_key is not None)
 st.write("Key Prefix:", api_key[:5] if api_key else "None")
-
-genai.configure(api_key=api_key)
-model = genai.GenerativeModel("gemini-2.5-flash")
+st.stop()
 
 
 # ---------------------------------------------------------
