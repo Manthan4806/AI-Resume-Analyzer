@@ -4,7 +4,7 @@ import re
 
 import streamlit as st
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
 from google.api_core.exceptions import ResourceExhausted
 
 from prompts import (
@@ -19,12 +19,9 @@ api_key = os.getenv("GEMINI_API_KEY")
 if not api_key:
     api_key = st.secrets.get("GEMINI_API_KEY")
 
-st.write("API Key Loaded:", api_key is not None)
-st.write("Key Prefix:", api_key[:5] if api_key else "None")
-import sys
-st.write("Python:", sys.version)
-st.write("google-generativeai:", genai.__version__)
-st.stop()
+
+genai.configure(api_key=api_key)
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 
 # ---------------------------------------------------------
