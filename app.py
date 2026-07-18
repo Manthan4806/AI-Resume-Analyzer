@@ -86,7 +86,7 @@ if uploaded_resume and st.button("🚀 Analyze Resume"):
 
     except Exception as e:
         st.error(str(e))
-        st.stop()
+        
 
     tabs = st.tabs(["📄 Resume","📊 ATS","🧠 Skills","🎯 Career","🚀 Projects","💼 Job Match"])
     tab1,tab2,tab3,tab4,tab5,tab6 = tabs
