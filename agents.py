@@ -4,7 +4,7 @@ import re
 
 import streamlit as st
 from dotenv import load_dotenv
-from google import genai
+import google.generativeai as genai
 from google.api_core.exceptions import ResourceExhausted
 
 from prompts import (
